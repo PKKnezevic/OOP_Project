@@ -66,7 +66,7 @@ public class Paddle extends Rectangle {
 	}
 	
 	protected void move() {
-		y = y + yVelocitiy;
+		this.y = y + yVelocitiy;
 	}
 	
 	protected void draw(Graphics g) {

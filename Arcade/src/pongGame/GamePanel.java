@@ -38,7 +38,8 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 	protected void newBall() {
-		
+		Random random = new Random();
+		ball = new Ball((WIDTH/2) - (BALL_DIM/2), random.nextInt(HEIGHT-BALL_DIM), BALL_DIM, BALL_DIM);
 	}
 	
 	protected void newPaddle() {
@@ -56,25 +57,80 @@ public class GamePanel extends JPanel implements Runnable {
 	protected void draw(Graphics g) {
 		paddle1.draw(g);
 		paddle2.draw(g);
+		ball.draw(g);
+		score.draw(g);
 	}
 	
 	protected void move() {
-		
+		paddle1.move();
+		paddle2.move();
+		ball.move();
 	}
 	
 	protected void checkCollision() {
+		//Odbijanje loptice
+		if(ball.y <= 0) {
+			ball.setYDirection(-ball.yVelocity);
+		} else if(ball.y >= HEIGHT-BALL_DIM) {
+			ball.setYDirection(-ball.yVelocity);
+		}
 		
+		//Odbijanje loptice od lopatice
+		if(ball.intersects(paddle1)) {
+			ball.xVelocity = Math.abs(ball.xVelocity);
+			ball.xVelocity += 1;
+			if(ball.yVelocity > 0) {
+				ball.yVelocity += 1;
+			} else {
+				ball.yVelocity--;
+			}
+			ball.setXDirection(ball.xVelocity);
+			ball.setYDirection(ball.yVelocity);
+		} else if(ball.intersects(paddle2)) {
+			ball.xVelocity = Math.abs(ball.xVelocity);
+			ball.xVelocity += 1;
+			if(ball.yVelocity > 0) {
+				ball.yVelocity += 1;
+			} else {
+				ball.yVelocity--;
+			}
+			ball.setXDirection(-ball.xVelocity);
+			ball.setYDirection(ball.yVelocity);
+		}
+		
+		//Zaustavlja igraca ako zeli izaci van prozora
+		if(paddle1.y <= 0) {
+			paddle1.y = 0;
+		} else if(paddle1.y >= (HEIGHT - PADDLE_HEIGHT)) {
+			paddle1.y = HEIGHT - PADDLE_HEIGHT;
+		}
+		
+		if(paddle2.y <= 0) {
+			paddle2.y = 0;
+		} else if(paddle2.y >= (HEIGHT - PADDLE_HEIGHT)) {
+			paddle2.y = HEIGHT - PADDLE_HEIGHT;
+		}
+		
+		//Provjera dali je lopta prosla igraca
+		if(ball.x <= 0) {
+			score.player2++;
+			newBall();
+		} else if(ball.x  >= WIDTH-BALL_DIM) {
+			score.player1++;
+			newBall();
+			System.out.println("Score p2: " + score.player1);
+		}
 	}
 	
 	public void run() {
 		//Petlja u kojoj se vrti igra
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 60;
+		double amountOfTicks = 60.0;
 		double nanoSeconds = 1000000000 / amountOfTicks;
 		double delta = 0;
 		while(true) {
 			long now = System.nanoTime();
-			delta += (now-lastTime);
+			delta += (now-lastTime)/nanoSeconds;
 			lastTime = now;
 			if(delta >= 1) {
 				move();
