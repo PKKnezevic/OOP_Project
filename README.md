@@ -1,2 +1,4 @@
-# OOP_Project
-Structured work for my personal project
+#Arcade game project
+
+##Posting my daily progress on the project
+Code might come in large clumps
