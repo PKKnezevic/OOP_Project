@@ -9,7 +9,7 @@ public class Ball extends Rectangle {
 	Random rand;
 	int yVelocity;
 	int xVelocity;
-	int initSpeed = 2;
+	int initSpeed = 5;
 	
 	protected Ball(int x, int y, int width, int height){
 		super(x,y,width,height);

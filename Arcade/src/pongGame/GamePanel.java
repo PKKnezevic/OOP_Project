@@ -7,7 +7,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+import dataHandling.DataHandling;
 
 public class GamePanel extends JPanel implements Runnable {
 	static final int WIDTH = 1280;
@@ -16,6 +21,9 @@ public class GamePanel extends JPanel implements Runnable {
 	static final int BALL_DIM = 15;
 	static final int PADDLE_WIDTH = 20;
 	static final int PADDLE_HEIGHT = 100;
+	protected int playerWon;
+	private boolean status = true;
+	private int choice;
 	Thread gameThread;
 	Image image;
 	Graphics graphics;
@@ -67,6 +75,9 @@ public class GamePanel extends JPanel implements Runnable {
 		ball.move();
 	}
 	
+	/**
+	 * Provjera sudaranja lopte i lopatica, te samih granica prozora
+	 */
 	protected void checkCollision() {
 		//Odbijanje loptice
 		if(ball.y <= 0) {
@@ -118,17 +129,36 @@ public class GamePanel extends JPanel implements Runnable {
 		} else if(ball.x  >= WIDTH-BALL_DIM) {
 			score.player1++;
 			newBall();
-			System.out.println("Score p2: " + score.player1);
+		}
+		
+		//Provjera koji je igrac pobijedio
+		playerWon = score.checkResults();
+		if(playerWon > 0) {
+			status = false;
+			DataHandling.saveScoresToFile("./Scores.bin", score);
+			JFrame anotherGame = new JFrame();
+			choice = JOptionPane.showConfirmDialog(anotherGame, "Would you like to play another game?", "Game Ended", JOptionPane.YES_NO_OPTION);
+			if(choice == 0) {
+				score.player1 = 0;
+				score.player2 = 0;
+			} else {
+				SwingUtilities.getWindowAncestor(this).setEnabled(false);
+				gameThread.interrupt();
+			}
+			
 		}
 	}
 	
+	/**
+	 * Jednostavna petlja za igru
+	 */
 	public void run() {
 		//Petlja u kojoj se vrti igra
 		long lastTime = System.nanoTime();
 		double amountOfTicks = 60.0;
 		double nanoSeconds = 1000000000 / amountOfTicks;
 		double delta = 0;
-		while(true) {
+		while(status) {
 			long now = System.nanoTime();
 			delta += (now-lastTime)/nanoSeconds;
 			lastTime = now;
@@ -141,6 +171,11 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 	}
 	
+	/**
+	 * Slusanje tipki od strane korisnika
+	 * @author Peter
+	 *
+	 */
 	public class KeyListen extends KeyAdapter {
 		public void keyPressed(KeyEvent ke) {
 			paddle1.keyPressed(ke);

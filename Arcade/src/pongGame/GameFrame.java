@@ -10,7 +10,7 @@ public class GameFrame extends JFrame {
 	protected GameFrame(){
 		gp = new GamePanel();
 		add(gp);
-		setTitle("Pong");
+		setTitle("Pong ---> First to 15");
 		setResizable(false);
 		setBackground(Color.black);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
