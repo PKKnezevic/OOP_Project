@@ -135,7 +135,7 @@ public class GamePanel extends JPanel implements Runnable {
 		playerWon = score.checkResults();
 		if(playerWon > 0) {
 			status = false;
-			DataHandling.saveScoresToFile("./Scores.bin", score);
+			DataHandling.saveScoresToFile("./ScoresPong.bin", score);
 			SwingUtilities.getWindowAncestor(this).dispose();
 			gameThread.interrupt();
 		}
