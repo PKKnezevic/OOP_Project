@@ -9,7 +9,7 @@ public class DataHandling {
 	public static void saveScoresToFile(String filePath, Object scoreToSave) {
 		File binFile = new File(filePath);		
 		try {
-			FileOutputStream fos = new FileOutputStream(binFile, false);
+			FileOutputStream fos = new FileOutputStream(binFile, true);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(scoreToSave);
 			oos.close();

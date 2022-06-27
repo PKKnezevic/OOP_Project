@@ -136,16 +136,8 @@ public class GamePanel extends JPanel implements Runnable {
 		if(playerWon > 0) {
 			status = false;
 			DataHandling.saveScoresToFile("./Scores.bin", score);
-			JFrame anotherGame = new JFrame();
-			choice = JOptionPane.showConfirmDialog(anotherGame, "Would you like to play another game?", "Game Ended", JOptionPane.YES_NO_OPTION);
-			if(choice == 0) {
-				score.player1 = 0;
-				score.player2 = 0;
-			} else {
-				SwingUtilities.getWindowAncestor(this).setEnabled(false);
-				gameThread.interrupt();
-			}
-			
+			SwingUtilities.getWindowAncestor(this).dispose();
+			gameThread.interrupt();
 		}
 	}
 	
