@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 public class GameFrame extends JFrame {
 	GamePanel gp;
 	
-	protected GameFrame(){
+	public GameFrame(){
 		gp = new GamePanel();
 		add(gp);
 		setTitle("Pong ---> First to 15");
@@ -17,5 +17,9 @@ public class GameFrame extends JFrame {
 		pack();
 		setVisible(true);
 		setLocationRelativeTo(null);
+	}
+	
+	public GamePanel getPanel() {
+		return gp;
 	}
 }

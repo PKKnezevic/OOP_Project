@@ -163,6 +163,10 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 	}
 	
+	public ScoreTable getScore() {
+		return score;
+	}
+	
 	/**
 	 * Slusanje tipki od strane korisnika
 	 * @author Peter

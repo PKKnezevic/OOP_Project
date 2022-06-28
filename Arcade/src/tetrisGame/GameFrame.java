@@ -3,25 +3,37 @@ package tetrisGame;
 import java.awt.Color;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
+import javax.swing.border.CompoundBorder;
+import javax.swing.JTextPane;
+import java.awt.Font;
+import java.awt.Window;
 
 public class GameFrame extends JFrame{
 	private GamePanel gamePanel;
 	
+	
 	public GameFrame() {
 		initComponents();
-		this.add(gamePanel);
-		this.setSize(500, 640);
 		setTitle("TETRIS");
 		setResizable(false);
-		setBackground(Color.gray);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
-		setLocationRelativeTo(null);
+		setLocation(800, 200);
+		pack();
+		startGame();
+		
 	}
 	
 	private void initComponents() {
 		gamePanel = new GamePanel();
-		
-		
+		getContentPane().add(gamePanel);
+		gamePanel.setBackground(Color.LIGHT_GRAY);
+	}
+	
+	private void startGame() {
+		new GameThread(gamePanel).start();
 	}
 }

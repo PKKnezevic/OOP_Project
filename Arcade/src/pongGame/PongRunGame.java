@@ -1,7 +1,14 @@
 package pongGame;
 
 public class PongRunGame {
-	public static void main(String[] args) {
-		GameFrame pongGame = new GameFrame();
+	static GameFrame gf;
+	
+	public PongRunGame(){}
+	public void runGame() {
+		gf = new GameFrame();
+	}
+	
+	public GameFrame getGameFrame() {
+		return gf;
 	}
 }

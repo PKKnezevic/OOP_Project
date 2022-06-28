@@ -48,4 +48,18 @@ public class ScoreTable extends Rectangle {
 		}
 		return 0;
 	}
+	
+	public int[] getPlayerScores() {
+		int[] playerScores = new int[2];
+		playerScores[0] = player1;
+		playerScores[1] = player2;
+		return playerScores;
+	}
+
+	@Override
+	public String toString() {
+		return "ScoreTable [player1=" + player1 + ", player2=" + player2 + "]";
+	}
+	
+	
 }
