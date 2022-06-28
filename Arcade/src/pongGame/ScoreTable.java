@@ -4,15 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class ScoreTable extends Rectangle {
-	/**
-	 * Generirana automatska verzija serijaliziranog objekta
-	 */
-	private static final long serialVersionUID = 3724748560721367908L;
+public class ScoreTable extends Rectangle implements Serializable {
 	private static int GAME_WIDTH;
 	private static int GAME_HEIGHT;
 	int player1;

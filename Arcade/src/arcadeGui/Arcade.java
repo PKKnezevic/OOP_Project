@@ -4,21 +4,17 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import dataHandling.DataHandling;
 import pongGame.GameFrame;
-import pongGame.PongRunGame;
 import pongGame.ScoreTable;
 
 public class Arcade extends JFrame {
@@ -31,7 +27,7 @@ public class Arcade extends JFrame {
 	private JTextField highScoreTetris;
 	private JTextField numberOfGamesPacMan;
 	private JTextField highScorePacMan;
-	private int playedPongGames;
+	private int playedPongGames = 1;
 	private int playedTetrisGames;
 	private int playedPacManGames;
 	GameFrame pongGame;
@@ -88,14 +84,8 @@ public class Arcade extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				pongGame = new GameFrame();
 				
-				JFrame dialogue = new JFrame();
-				JOptionPane.showInternalMessageDialog(null, "Still running");
-				if(dialogue.isActive() != true) {
+				if(pongGame.isActive() != true) {
 					LinkedList<ScoreTable> pongScores = DataHandling.getPongScoresFromFile();
-					for(ScoreTable st : pongScores) {
-						System.out.println(pongScores.size());
-						System.out.println(st);
-					}
 					ScoreTable  lastScore = pongScores.getLast();
 					numberOfGamesPong.setText("Played games: " + ++playedPongGames);
 					pongLastResult.setText("Last result: B->" + lastScore.getPlayerScores()[0] + " " + lastScore.getPlayerScores()[1] + "<-R");					

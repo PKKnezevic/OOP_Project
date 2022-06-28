@@ -17,6 +17,7 @@ public class DataHandling {
 			FileOutputStream fos = new FileOutputStream(binFile, true);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(scoreToSave);
+			oos.reset();
 			oos.close();
 			fos.close();
 		} catch (IOException ioe) {
@@ -36,7 +37,6 @@ public class DataHandling {
 				scores.add(score);
 			}
 			ois.close();
-			fis.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} catch (ClassNotFoundException e) {
