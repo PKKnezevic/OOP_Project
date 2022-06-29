@@ -14,6 +14,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import dataHandling.DataHandling;
+import pacManGame.PacManGame;
 import pongGame.GameFrame;
 import pongGame.ScoreTable;
 
@@ -31,6 +32,7 @@ public class Arcade extends JFrame {
 	private int playedTetrisGames;
 	private int playedPacManGames;
 	GameFrame pongGame;
+	PacManGame pacManGame;
 
 	/**
 	 * Launch the application.
@@ -130,7 +132,7 @@ public class Arcade extends JFrame {
 		pacManButton.setBounds(455, 410, 100, 40);
 		pacManButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				pacManGame = new PacManGame();
 			}
 		});
 		contentPane.add(pacManButton);
