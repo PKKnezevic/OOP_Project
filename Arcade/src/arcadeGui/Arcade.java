@@ -30,7 +30,7 @@ public class Arcade extends JFrame {
 	private JTextField highScorePacMan;
 	private int playedPongGames = 1;
 	private int playedTetrisGames;
-	private int playedPacManGames;
+	private int playedPacManGames = 0;
 	GameFrame pongGame;
 	PacManGame pacManGame;
 
@@ -132,7 +132,9 @@ public class Arcade extends JFrame {
 		pacManButton.setBounds(455, 410, 100, 40);
 		pacManButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				numberOfGamesPacMan.setText("Played games: " + ++playedPacManGames);
 				pacManGame = new PacManGame();
+				
 			}
 		});
 		contentPane.add(pacManButton);

@@ -23,17 +23,17 @@ import javax.swing.Timer;
  *
  */
 public class PacMan extends JPanel implements ActionListener {
-	private Dimension field;  //Dimension of the Panel
-	private final Font font = new Font("Arial", Font.BOLD, 13);
+	private Dimension d;  //Dimension of the Panel
+	private final Font smallFont = new Font("Arial", Font.BOLD, 13);
 	private boolean inGame = false;
 	private boolean dying = false;
 	private final int BLOCK_SIZE = 24;  //Size of a single block unit
 	private final int NUM_OF_BLOCKS = 15; //Number of rows and collumns
 	private final int SCREEN_SIZE = NUM_OF_BLOCKS * BLOCK_SIZE; //Size of the GameScreen specifically
-	private final int MAX_GHOSTS = 4;
-	private final int PACMAN_SPEED = 5;
+	private final int MAX_GHOSTS = 12;
+	private final int PACMAN_SPEED = 6;
 	
-	private int numberOfGhosts = 1;
+	private int numberOfGhosts = 6;
 	private int lives, scores;
 	private int[] dx, dy; //Data position for the ghosts
 	private int[] ghostX, ghostY, ghostDX, ghostDY, ghostSpeed; //General ghost data 
@@ -50,6 +50,24 @@ public class PacMan extends JPanel implements ActionListener {
 	private short[] screenData; //Array of all the data that's displayed on the screen
 	private Timer timer; //Game loop
 	
+//	 private final short levelData[] = {
+//		    	19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
+//		        17, 16, 16, 16, 16, 24, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+//		        25, 24, 24, 24, 28, 0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
+//		        0,  0,  0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
+//		        19, 18, 18, 18, 18, 18, 16, 16, 16, 16, 24, 24, 24, 24, 20,
+//		        17, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
+//		        17, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
+//		        17, 16, 16, 16, 24, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
+//		        17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 18, 18, 18, 18, 20,
+//		        17, 24, 24, 28, 0, 25, 24, 24, 16, 16, 16, 16, 16, 16, 20,
+//		        21, 0,  0,  0,  0,  0,  0,   0, 17, 16, 16, 16, 16, 16, 20,
+//		        17, 18, 18, 22, 0, 19, 18, 18, 16, 16, 16, 16, 16, 16, 20,
+//		        17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+//		        17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+//		        25, 24, 24, 24, 26, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28
+//		    };
+	
 	
 	private final short levelData[] = {
 			/**
@@ -62,17 +80,17 @@ public class PacMan extends JPanel implements ActionListener {
 			19, 26, 26, 26, 18, 18, 18, 26, 18, 18, 18, 26, 18, 18, 22,
 			21,  0,  0,  0, 17, 16, 20,  0, 17, 16, 20,  0, 17, 16, 20,
 			21,  0, 19, 18, 16, 16, 28,  0, 25, 16, 20,  0, 17, 16, 20,
-			21,  0, 25, 16, 16, 20,  0,  0,  0, 17, 20,  0, 17, 16, 20,
-			21,  0,  0,  0, 17, 16, 16, 16, 16, 16, 28,  0, 17, 16, 20,
+			21,  0, 25, 24, 16, 20,  0,  0,  0, 17, 20,  0, 17, 16, 20,
+			21,  0,  0,  0, 17, 16, 18, 18, 18, 24, 28,  0, 17, 16, 20,
 			17, 18, 22,  0, 17, 16, 16, 16, 20,  0,  0,  0, 17, 16, 20,
-			17, 16, 20,  0, 17, 16, 16, 16, 20,  0, 19, 16, 16, 16, 20,
-			17, 16, 20,  0, 17, 16, 16, 16, 20,  0, 17, 16, 16, 16, 20,
-			17, 16, 16, 16, 16, 16, 16, 16, 20,  0, 17, 20,  0, 17, 20,
-			17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,  0, 17, 20,
+			17, 16, 20,  0, 17, 16, 16, 16, 20,  0, 19, 18, 16, 16, 20,
+			17, 16, 20,  0, 17, 16, 16, 16, 20,  0, 17, 16, 24, 16, 20,
+			17, 16, 16, 18, 16, 16, 16, 16, 20,  0, 17, 20,  0, 17, 20,
+			17, 16, 16, 16, 16, 16, 16, 24, 16, 18, 16, 20,  0, 17, 20,
 			17, 16, 16, 16, 16, 16, 20,  0, 17, 16, 16, 20,  0, 17, 20,
 			17, 16, 16, 16, 16, 16, 20,  0, 25, 24, 24, 28,  0, 17, 20,
 			17, 16, 16, 16, 16, 16, 20,  0,  0,  0,  0,  0,  0, 17, 20,
-			17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
+			17, 16, 16, 16, 16, 16, 16, 18, 18, 18, 18, 18, 18, 16, 20,
 			25, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28
 	};
 	
@@ -87,57 +105,26 @@ public class PacMan extends JPanel implements ActionListener {
 	
 	private void loadImages() {
 		down = new ImageIcon("./src/PacManImages/down.gif").getImage();
-		up = new ImageIcon("/src/PacManImages/up.gif").getImage();
-		left = new ImageIcon("/src/PacManImages/left.gif").getImage();
-		right = new ImageIcon("/src/PacManImages/right.gif").getImage();
-		ghost = new ImageIcon("/src/PacManImages/ghost.gif").getImage();
-		heart = new ImageIcon("/src/PacManImages/haert.png").getImage();
-	}
-	
-	private void showIntroScreen(Graphics2D g2d) {
-		String start = "Press SPACE to start";
-		g2d.setColor(Color.yellow);
-		g2d.drawString(start, SCREEN_SIZE/4, 200);
-	}
-	
-	private void drawScore(Graphics2D g2d) {
-		g2d.setFont(font);
-		g2d.setColor(Color.red);
-		String score = "Score: " + scores;
-		g2d.drawString(score, SCREEN_SIZE/2 + 96, SCREEN_SIZE + 16);
-		
-		for(int i = 0; i < lives; i++) {
-			g2d.drawImage(heart, i * 28 + 8, SCREEN_SIZE + 1, this);
-		}
+		up = new ImageIcon("./src/PacManImages/up.gif").getImage();
+		left = new ImageIcon("./src/PacManImages/left.gif").getImage();
+		right = new ImageIcon("./src/PacManImages/right.gif").getImage();
+		ghost = new ImageIcon("./src/PacManImages/ghost.gif").getImage();
+		heart = new ImageIcon("./src/PacManImages/heart.png").getImage();
 	}
 	
 	private void initComponents() {
-		screenData = new short[NUM_OF_BLOCKS*NUM_OF_BLOCKS];
-		field = new Dimension(400,400);
-		ghostX = new int [MAX_GHOSTS];
-		ghostDX = new int [MAX_GHOSTS];
-		ghostY = new int [MAX_GHOSTS];
-		ghostDY = new int [MAX_GHOSTS];
-		ghostSpeed = new int [MAX_GHOSTS];
+		screenData = new short[NUM_OF_BLOCKS * NUM_OF_BLOCKS];
+		d = new Dimension(400,400);
+		ghostX = new int[MAX_GHOSTS];
+		ghostDX = new int[MAX_GHOSTS];
+		ghostY = new int[MAX_GHOSTS];
+		ghostDY = new int[MAX_GHOSTS];
+		ghostSpeed = new int[MAX_GHOSTS];
 		dx = new int[4];
 		dy = new int[4];
 		
-		timer = new Timer(500, this);
+		timer = new Timer(40, this);
 		timer.start();
-	}
-	
-	private void initGame() {
-		lives = 3;
-		scores = 0;
-		initLevel();
-		numberOfGhosts = 1;
-		currentSpeed = 3;
-	}
-	
-	private void initLevel() {
-		for(int i = 0; i < NUM_OF_BLOCKS * NUM_OF_BLOCKS; i++) {
-			screenData[i] = levelData[i];
-		}
 	}
 	
 	private void playGame(Graphics2D g2d) {
@@ -151,55 +138,55 @@ public class PacMan extends JPanel implements ActionListener {
 		}
 	}
 	
-	private void movePacMan() {
-		int pos;
-		short ch;
-		
-		if(pacmanX % BLOCK_SIZE == 0 && pacmanY % BLOCK_SIZE == 0) {
-			pos = pacmanX / BLOCK_SIZE + NUM_OF_BLOCKS * (int) (pacmanY / BLOCK_SIZE);
-			ch = screenData[pos];
-			if((ch & 16) != 0) {
-				screenData[pos] = (short) (ch & 15);
-				scores++;
-			}
-			
-			if(reqDX != 0 || reqDY != 0) {
-				if(!((reqDX == -1 && reqDY == 0 && (ch & 1) != 0) 
-				|| (reqDY == 1 && reqDY == 0 && (ch & 4) != 0) 
-				|| (reqDX == 0 && reqDY == -1 && (ch & 2) != 0) 
-				|| (reqDX == 0 && reqDY == 1 && (ch & 8) != 0))) {
-					pacmanComanndX = reqDX;
-					pacmanCommandY = reqDY;
-				}
-			}
-			
-			if((pacmanComanndX == -1 && pacmanY == 0 && (ch & 1) != 0)
-			|| (pacmanComanndX == 1 && pacmanCommandY == 0 && (ch & 4) != 0)
-			|| (pacmanComanndX == 0 && pacmanCommandY == -1 && (ch & 2) != 0)
-			|| (pacmanComanndX == 0 && pacmanCommandY == 1 && (ch & 8) != 0)) {
-				pacmanComanndX = 0;
-				pacmanCommandY = 0;
-			}
-		}
-		
-		pacmanX = pacmanX + PACMAN_SPEED * pacmanComanndX;
-		pacmanY = pacmanY + PACMAN_SPEED * pacmanCommandY;
+	private void showIntroScreen(Graphics2D g2d) {
+		String start = "Press SPACE to start";
+		g2d.setColor(Color.yellow);
+		g2d.drawString(start, (SCREEN_SIZE)/4, 200);
 	}
 	
-	private void drawPacMan(Graphics2D g2d) {
-		if(reqDX == -1) {
-			g2d.drawImage(left, pacmanX+1, pacmanY +1, this);
-		} else if(reqDX == 1) {
-			g2d.drawImage(right, pacmanX+1, pacmanY +1, this);			
-		} else if(reqDY == -1) {
-			g2d.drawImage(up, pacmanX+1, pacmanY +1, this);						
-		} else if(reqDY == 1) {
-			g2d.drawImage(down, pacmanX+1, pacmanY +1, this);			
-			
+	private void drawScore(Graphics2D g2d) {
+		g2d.setFont(smallFont);
+		g2d.setColor(Color.red);
+		String score = "Score: " + scores;
+		g2d.drawString(score, SCREEN_SIZE/2 + 96, SCREEN_SIZE + 16);
+		
+		for(int i = 0; i < lives; i++) {
+			g2d.drawImage(heart, i * 28 + 8, SCREEN_SIZE + 1, this);
 		}
 	}
 	
-	private void moveGhosts(Graphics g2d) {
+	private void checkMaze() {
+		int i = 0;
+		boolean finished = true;
+		
+		while(i < NUM_OF_BLOCKS * NUM_OF_BLOCKS && finished) {
+			if((screenData[i]) != 0) {
+				finished = false;
+			}
+			i++;
+		} 
+		
+		if(finished) {
+			scores += 50;
+			if(numberOfGhosts < MAX_GHOSTS) {
+				numberOfGhosts++;
+			}
+			if(currentSpeed < MAX_SPEED) {
+				currentSpeed++;
+			}
+			initLevel();
+		}
+	}
+	
+	private void death() {
+		lives--;
+		if(lives == 0) {
+			inGame = false;
+		}
+		continueLevel();
+	}
+	
+	private void moveGhosts(Graphics2D g2d) {
 		int pos;
 		int count;
 		for(int i = 0; i < numberOfGhosts; i++) {
@@ -244,49 +231,120 @@ public class PacMan extends JPanel implements ActionListener {
 					ghostDY[i] = dy[count];
 				}
 			}
-			
 			ghostX[i] = ghostX[i] + (ghostDX[i] * ghostSpeed[i]);
 			ghostY[i] = ghostY[i] + (ghostDY[i] * ghostSpeed[i]);
 			drawGhost(g2d, ghostX[i] + 1, ghostY[i] + 1);
+			
 			if(pacmanX > (ghostX[i] - 12) && pacmanX < (ghostX[i] + 12) 
-					&& pacmanY > (ghostY[i] -12) && pacmanY < (ghostY[i] + 12) 
-						&& inGame) {
+				&& pacmanY > (ghostY[i] - 12) && pacmanY < (ghostY[i] + 12) 
+				&& inGame) {
 				dying = true;
 			}
 		}
 	}
 	
-	private void drawGhost(Graphics g2d, int x, int y) {
+	private void drawGhost(Graphics2D g2d, int x, int y) {
 		g2d.drawImage(ghost, x, y, this);
 	}
 	
-	private void checkMaze() {
-		int i = 0;
-		boolean finished = true;
+	private void movePacMan() {
+		int pos;
+		short ch;
 		
-		while(i < NUM_OF_BLOCKS * NUM_OF_BLOCKS && finished) {
-			 if((screenData[i] & 48) != 0) {
-				 finished = false;
-			 }
-		} i++;
-		
-		if(finished) {
-			scores += 50;
-			if(numberOfGhosts < MAX_GHOSTS) {
-				numberOfGhosts++;
+		if(pacmanX % BLOCK_SIZE == 0 && pacmanY % BLOCK_SIZE == 0) {
+			pos = pacmanX / BLOCK_SIZE + NUM_OF_BLOCKS * (int) (pacmanY / BLOCK_SIZE);
+			ch = screenData[pos];
+			
+			if((ch & 16) != 0) {
+				screenData[pos] = (short) (ch & 15);
+				scores++;
 			}
-			if(currentSpeed < MAX_SPEED) {
-				currentSpeed++;
+			
+			if(reqDX != 0 || reqDY != 0) {
+				if(!((reqDX == -1 && reqDY == 0 && (ch & 1) != 0) 
+						|| (reqDX == 1 && reqDY == 0 && (ch & 4) != 0) 
+						|| (reqDX == 0 && reqDY == -1 && (ch & 2) != 0) 
+						|| (reqDX == 0 && reqDY == 1 && (ch & 8) != 0))) {
+					pacmanComanndX = reqDX;
+					pacmanCommandY = reqDY;
+				}
 			}
-		} initLevel();
-	}
-	
-	private void death() {
-		lives--;
-		if(lives == 0) {
-			inGame = false;
+			
+			if((pacmanComanndX == -1 && pacmanCommandY == 0 && (ch & 1) != 0)
+					|| (pacmanComanndX == 1 && pacmanCommandY == 0 && (ch & 4) != 0)
+					|| (pacmanComanndX == 0 && pacmanCommandY == -1 && (ch & 2) != 0)
+					|| (pacmanComanndX == 0 && pacmanCommandY == 1 && (ch & 8) != 0)) {
+				pacmanComanndX = 0;
+				pacmanCommandY = 0;
+			}
 		}
 		
+		pacmanX = pacmanX + PACMAN_SPEED * pacmanComanndX;
+		pacmanY = pacmanY + PACMAN_SPEED * pacmanCommandY;
+	}
+	
+	private void drawPacMan(Graphics2D g2d) {
+		if(reqDX == -1) {
+			g2d.drawImage(left, pacmanX + 1, pacmanY + 1, this);
+		} else if(reqDX == 1) {
+			g2d.drawImage(right, pacmanX + 1, pacmanY + 1, this);			
+		} else if(reqDY == -1) {
+			g2d.drawImage(up, pacmanX + 1, pacmanY + 1, this);						
+		} else {
+			g2d.drawImage(down, pacmanX + 1, pacmanY + 1, this);			
+		}
+	}
+	
+	private void drawMaze(Graphics2D g2d) {
+		short i = 0;
+		int x,y;
+		
+		for(y = 0; y < SCREEN_SIZE; y += BLOCK_SIZE) {
+			for(x = 0; x < SCREEN_SIZE; x += BLOCK_SIZE) {
+				g2d.setColor(Color.magenta);
+				g2d.setStroke(new BasicStroke(5));
+				
+				if(levelData[i] == 0) {
+					g2d.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+				}
+				
+				if((screenData[i] & 1) != 0) {
+					g2d.drawLine(x, y, x, y + BLOCK_SIZE - 1);
+				}
+				
+				if((screenData[i] & 2) != 0) {
+					g2d.drawLine(x, y, x + BLOCK_SIZE - 1, y);
+				}
+				
+				if((screenData[i] & 4) != 0) {
+					g2d.drawLine(x + BLOCK_SIZE - 1, y, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
+				}
+				
+				if((screenData[i] & 8) != 0) {
+					g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
+				}
+				
+				if((screenData[i] & 16) != 0){
+					g2d.setColor(Color.white);
+					g2d.fillOval(x + 10, y + 10, 6, 6);
+				}
+				i++;
+			}
+		}
+	}
+	
+	private void initGame() {
+		lives = 3;
+		scores = 0;
+		initLevel();
+		numberOfGhosts = 3;
+		currentSpeed = 3;
+	}
+	
+	private void initLevel() {
+		for(int i = 0; i < NUM_OF_BLOCKS * NUM_OF_BLOCKS; i++) {
+			screenData[i] = levelData[i];
+		}
 		continueLevel();
 	}
 	
@@ -318,11 +376,14 @@ public class PacMan extends JPanel implements ActionListener {
 		dying = false;
 	}
 	
+	
+	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
+		
 		g2d.setColor(Color.black);
-		g2d.fillRect(0, 0, field.width, field.height);
+		g2d.fillRect(0, 0, d.width, d.height);
 		
 		drawMaze(g2d);
 		drawScore(g2d);
@@ -334,44 +395,14 @@ public class PacMan extends JPanel implements ActionListener {
 		}
 		
 		Toolkit.getDefaultToolkit().sync();
+		g2d.dispose();
 	}
 	
-	private void drawMaze(Graphics2D g2d) {
-		short i = 0;
-		int x,y;
+	
+	
+	class KeyClass extends KeyAdapter {
 		
-		for(y = 0; y < SCREEN_SIZE; y += BLOCK_SIZE) {
-			for(x = 0; x < SCREEN_SIZE; x += BLOCK_SIZE) {
-				g2d.setColor(Color.magenta);
-				g2d.setStroke(new BasicStroke(5));
-				if(screenData[i] == 0) {
-					g2d.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
-				}
-				if((screenData[i] & 1) != 0) {
-					g2d.drawLine(x, y, x, y + BLOCK_SIZE - 1);
-				}
-				if((screenData[i] & 2) != 0) {
-					g2d.drawLine(x, y, x + BLOCK_SIZE - 1, y);
-				}
-				if((screenData[i] & 4) != 0) {
-					g2d.drawLine(x + BLOCK_SIZE - 1, y, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
-				}
-				if((screenData[i] & 8) != 0) {
-					g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
-				}
-				if((screenData[i] & 16) != 0){
-					g2d.setColor(Color.white);
-					g2d.fillOval(x+10, y+10, 6,6);
-				}
-				i++;
-			}
-		}
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {};
-	
-	protected class KeyClass extends KeyAdapter {
+		@Override
 		public void keyPressed(KeyEvent e) {
 			int key = e.getKeyCode();
 			if(inGame) {
@@ -397,6 +428,10 @@ public class PacMan extends JPanel implements ActionListener {
 				}
 			}
 		}
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		repaint();
 	}
 	
 
