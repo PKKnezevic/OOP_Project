@@ -136,7 +136,10 @@ public class Arcade extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				numberOfGamesPacMan.setText("Played games: " + ++playedPacManGames);
 				pacManGame = new PacManGame();
-				
+				int score = DataHandling.getHighScore("./PacManScore.txt");
+				if(score != 0) {
+					highScorePacMan.setText("Latest highscore: " +String.valueOf(score));
+				}
 			}
 		});
 	}

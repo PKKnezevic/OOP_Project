@@ -3,9 +3,9 @@ package pacManGame;
 import javax.swing.JFrame;
 
 public class PacManGame extends JFrame implements Runnable {
-	
+	PacMan pacMan;
 	public PacManGame(){
-		add(new PacMan());
+		add(pacMan = new PacMan());
 		run();
 	}
 	@Override

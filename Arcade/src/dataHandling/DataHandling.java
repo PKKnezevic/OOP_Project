@@ -24,7 +24,21 @@ public class DataHandling{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+	}
+	
+	public static void saveScoreToFile(String filePath, int score) {
+		File file = new File(filePath);
+		try {
+			StringBuilder strb = new StringBuilder();
+			strb.append(score);
+			PrintWriter pw = new PrintWriter(file);
+			pw.write(strb.toString());
+			pw.flush();
+			pw.close();
+			
+		} catch (IOException ioe) {
+			System.out.println("Error while writing high score!");
+		}
 	}
 	
 	public static LinkedList<String> getPongScoresFromFile(String filepath) {
@@ -40,5 +54,19 @@ public class DataHandling{
 		}
 		
 		return scores;
+	}
+	
+	public static int getHighScore(String filepath) {
+		File file = new File(filepath);
+		int num = 0;
+		try {
+			Scanner sc = new Scanner(file);
+			while(sc.hasNext()) {
+				num = sc.nextInt();
+			}
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("File missing..");
+		}
+		return num;
 	}
 }
