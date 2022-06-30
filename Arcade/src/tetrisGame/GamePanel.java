@@ -3,9 +3,9 @@ package tetrisGame;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.Random;
 
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class GamePanel extends JPanel {
 	private static final Dimension SCREEN_SIZE = new Dimension(400, 600);
@@ -15,23 +15,27 @@ public class GamePanel extends JPanel {
 	private TetrisBlock block;
 	private Color[][] background;
 	GameThread gameThread;
+	private TetrisBlock[] tetrisBlocks;
 	
 	
 	public GamePanel() {
+		tetrisBlocks = new TetrisBlock[] {new IBlock(), new JBlock(), new SBlock(), new TBlock(), new OBlock(), new LBlock(), new ZBlock()};
+		background = new Color[numberOfRows][NUMBER_OF_COLLUMNS];
 		spawnBlock();
 		setFocusable(true);
 		setPreferredSize(SCREEN_SIZE);
-		background = new Color[numberOfRows][NUMBER_OF_COLLUMNS];
 	}
 	
 	protected void spawnBlock() {
-		block = new TetrisBlock(new int[][]{{1,0},{1,0},{1,1}},Color.blue);
+		Random rand = new Random();
+		block = tetrisBlocks[rand.nextInt(0, tetrisBlocks.length)];
 		block.spawnBlock(NUMBER_OF_COLLUMNS);
 	}
 	
 	protected boolean moveGridDown() {
 		if(checkBottom() == false) {
-			moveBlockToBackground();
+			
+			
 			return false;
 		}
 			block.moveDown();
@@ -39,52 +43,54 @@ public class GamePanel extends JPanel {
 			return true;			
 	}
 	
-	private boolean checkBottom() {
-		if(block.getBottom() == numberOfRows) {
-			return false;
-		} else {
-			int[][] shape = block.getShape();
-			int width = block.getWidth();
-			int height = block.getHeight();
-			
-			for(int col = 0; col < width; col++) {
-				for(int row = height-1; row >= 0; row--) {
-					if(shape[row][col] != 0) {
-						int x = col + block.getX();
-						int y = row + block.getY() + 1;
-						if(y < 0) {
-							break;
-						}
-						if(background[y][x] != null) {
-							return false;
-						}
-						break;
-					}
+	public boolean isBlockOutOfBounds() {
+		if(block.getY() < 0) {
+			block = null;
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
+	public int clearLines() {
+		boolean lineFilled;
+		int linesCleard = 0;
+		for(int row = numberOfRows - 1; row >= 0; row --) {
+			lineFilled = true;
+			for(int col = 0; col < NUMBER_OF_COLLUMNS; col++) {
+				if(background[row][col] == null) {
+					lineFilled = false;
+					break;
 				}
 			}
 			
-			return true;
+			if(lineFilled) {
+				linesCleard++;
+				clearLine(row);
+				shiftDown(row);
+				clearLine(0);
+				repaint();
+			}
+		}
+		return linesCleard;
+	}
+	
+	private void clearLine(int row) {
+		for(int i = 0; i < NUMBER_OF_COLLUMNS; i++) {
+			background[row][i] = null;
 		}
 	}
 	
-	private boolean checkLeft() {
-		if(block.getLeftEdge() == 0) {
-			return false;
-		} else {
-			return true;
+	private void shiftDown(int row) {
+		for(int r = row; r > 0; r--) {
+			for(int col = 0; col < NUMBER_OF_COLLUMNS; col++) {
+				background[r][col] = background[r-1][col];
+			}
 		}
 	}
 	
-	private boolean checkRight() {
-		if(block.getRightEdge() == NUMBER_OF_COLLUMNS) {
-			return false;
-		} else {
-			return true; 
-		}
-	}
-	
-	
-	private void moveBlockToBackground() {
+	public void moveBlockToBackground() {
 		int[][] shape = block.getShape();
 		int height = block.getHeight();
 		int width = block.getWidth();
@@ -145,20 +151,27 @@ public class GamePanel extends JPanel {
 	}
 	
 	public void moveBlockRight() {
-		if(checkRight()) {
+		if(block == null) {
+			return;
+		}else if(checkRight()) {
 			block.moveRight();			
 		}
 		repaint();
 	}
 	
 	public void moveBlockLeft() {
-		if(checkLeft()) {
+		if(block == null) {
+			return;
+		}else if(checkLeft()) {
 			block.moveLeft();			
 		}
 		repaint();
 	}
 	
 	public void dropBlockDown() {
+		if(block == null) {
+			return;
+		}
 		while(checkBottom()) {
 			block.moveDown();
 		}
@@ -166,8 +179,102 @@ public class GamePanel extends JPanel {
 	}
 	
 	public void rotateBlock() {
+		if(block == null) {
+			return;
+		}
 		block.rotateBlock();
+		if(block.getLeftEdge() < 0) {
+			block.setX(0);
+		}
+		if(block.getRightEdge() >= NUMBER_OF_COLLUMNS) {
+			block.setX(NUMBER_OF_COLLUMNS - block.getWidth());
+		}
+		if(block.getBottom() >= numberOfRows) {
+			block.setY(numberOfRows - block.getHeight());
+		}
 		repaint();
+	}
+	
+	private boolean checkBottom() {
+		if(block.getBottom() == numberOfRows) {
+			return false;
+		} else {
+			int[][] shape = block.getShape();
+			int width = block.getWidth();
+			int height = block.getHeight();
+			
+			for(int col = 0; col < width; col++) {
+				for(int row = height-1; row >= 0; row--) {
+					if(shape[row][col] != 0) {
+						int x = col + block.getX();
+						int y = row + block.getY() + 1;
+						if(y < 0) {
+							break;
+						}
+						if(background[y][x] != null) {
+							return false;
+						}
+						break;
+					}
+				}
+			}
+			return true;
+		}
+	}
+	
+	private boolean checkLeft() {
+		if(block.getLeftEdge() == 0) {
+			return false;
+		} else {
+			int[][] shape = block.getShape();
+			int width = block.getWidth();
+			int height = block.getHeight();
+			
+			for(int row = 0; row < height; row++) {
+				for(int col = 0; col < width; col++) {
+					if(shape[row][col] != 0) {
+						int x = col + block.getX() - 1;
+						int y = row + block.getY();
+						if(y < 0) {
+							break;
+						}
+						if(background[y][x] != null) {
+							return false;
+						}
+						break;
+					}
+				}
+			}
+			
+			return true;
+		}
+	}
+	
+	private boolean checkRight() {
+		if(block.getRightEdge() == NUMBER_OF_COLLUMNS) {
+			return false;
+		}
+		int[][] shape = block.getShape();
+		int width = block.getWidth();
+		int height = block.getHeight();
+		
+		for(int row = 0; row < height; row++) {
+			for(int col = width-1; col >= 0; col--) {
+				if(shape[row][col] != 0) {
+					int x = col + block.getX() + 1;
+					int y = row + block.getY();
+					if(y < 0) {
+						break;
+					}
+					if(background[y][x] != null) {
+						return false;
+					}
+					break;
+				}
+			}
+		}
+			
+		return true; 
 	}
 
 	@Override

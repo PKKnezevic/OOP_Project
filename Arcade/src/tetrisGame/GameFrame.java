@@ -1,6 +1,5 @@
 package tetrisGame;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 
@@ -8,10 +7,13 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 
 public class GameFrame extends JFrame{
 	private GamePanel gamePanel;
+	private JLabel score;
+	private JLabel speed;
 	
 	
 	public GameFrame() {
@@ -67,12 +69,28 @@ public class GameFrame extends JFrame{
 	
 	private void initComponents() {
 		gamePanel = new GamePanel();
-		getContentPane().add(gamePanel, BorderLayout.CENTER);
+		getContentPane().add(gamePanel);
 		gamePanel.setBackground(Color.LIGHT_GRAY);
 		gamePanel.setLayout(null);
+		
+		score = new JLabel("Score: ");
+		score.setBounds(300, 0, 100, 30);
+		gamePanel.add(score);
+		
+		speed = new JLabel("Level: 1");
+		speed.setBounds(300, 40, 100, 30);
+		gamePanel.add(speed);
 	}
 	
 	private void startGame() {
-		new GameThread(gamePanel).start();
+		new GameThread(gamePanel, this).start();
+	}
+	
+	public void updateScore(int score) {
+		this.score.setText("Score: " + String.valueOf(score));
+	}
+	
+	public void updateLevel(int level) {
+		speed.setText("Level: " + String.valueOf(level));
 	}
 }
