@@ -17,6 +17,7 @@ import dataHandling.DataHandling;
 import pacManGame.PacManGame;
 import pongGame.GameFrame;
 import pongGame.ScoreTable;
+import tetrisGame.TetristGame;
 
 public class Arcade extends JFrame{
 
@@ -33,6 +34,7 @@ public class Arcade extends JFrame{
 	private int playedPacManGames = 0;
 	GameFrame pongGame;
 	PacManGame pacManGame;
+	TetristGame tetrisGame;
 	private JButton pongButton;
 	private JButton tetrisButton;
 	private JButton pacManButton;
@@ -127,7 +129,12 @@ public class Arcade extends JFrame{
 		tetrisButton.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
 		tetrisButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				numberOfGamesTetris.setText("Played games: " + ++playedTetrisGames);
+				tetrisGame = new TetristGame();
+				int score = DataHandling.getHighScore("./TetrisScore.txt");
+				if(score != 0) {
+					highScoreTetris.setText("Latest highscore: " + String.valueOf(score));
+				}
 			}
 		});
 		

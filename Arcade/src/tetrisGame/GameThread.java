@@ -1,5 +1,10 @@
 package tetrisGame;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import dataHandling.DataHandling;
+
 public class GameThread extends Thread {
 	private GamePanel gp;
 	private GameFrame gf; //Putting a field reference of the frame to update values
@@ -14,11 +19,15 @@ public class GameThread extends Thread {
 		this.gp = gp;
 		this.gf = gf;
 	}
+	
+	/**
+	 * Game loop which is used to operate the game
+	 */
 	@Override
 	public void run() {
 		while(true) {
-			gp.spawnBlock();
-			while(gp.moveGridDown()) {
+			gp.spawnBlock(); //Spawns blocks during the loop	
+			while(gp.moveGridDown()) { //While blocks can be moved down operate the game
 				try {
 					Thread.sleep(pause);
 				} catch (InterruptedException e) {
@@ -27,7 +36,10 @@ public class GameThread extends Thread {
 			}
 			
 			if(gp.isBlockOutOfBounds()) {
-				System.out.println("GAME OVER");
+				JFrame gameOver = new JFrame();
+				JOptionPane.showMessageDialog(gameOver, "GAME OVER!");
+				DataHandling.saveScoreToFile("./TetrisScore.txt", score);
+				gf.dispose();
 				break;
 			}
 			

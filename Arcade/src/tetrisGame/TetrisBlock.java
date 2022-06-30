@@ -16,6 +16,10 @@ public class TetrisBlock {
 		initShapes();
 	}
 	
+	/**
+	 * Spawns a tetris block above the game array, on a random collumn with a random colour.
+	 * @param gridWidth
+	 */
 	public void spawnBlock(int gridWidth) {
 		Random rand = new Random();
 		currentRotation = rand.nextInt(shapes.length);
@@ -26,7 +30,9 @@ public class TetrisBlock {
 		
 		color = colours[rand.nextInt(colours.length)];
 	}
-	
+	/**
+	 * Initalises the array which contains all the shape rotations a single block can have
+	 */
 	private void initShapes() {
 		shapes = new int[4][][];
 		
@@ -90,6 +96,9 @@ public class TetrisBlock {
 		x++;
 	}
 	
+	/**
+	 * Rotates the block from the given shapes in the array, looping back to the first after the last element is indexed
+	 */
 	public void rotateBlock() {
 		currentRotation++;
 		if(currentRotation > 3) {

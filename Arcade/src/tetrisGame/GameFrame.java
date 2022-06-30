@@ -29,6 +29,9 @@ public class GameFrame extends JFrame{
 		
 	}
 	
+	/**
+	 * A little bit of a different input control attempt where we're using maps to save control inputs
+	 */
 	private void initControls() {
 		InputMap im = this.getRootPane().getInputMap();
 		ActionMap am = this.getRootPane().getActionMap();

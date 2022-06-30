@@ -26,6 +26,9 @@ public class GamePanel extends JPanel {
 		setPreferredSize(SCREEN_SIZE);
 	}
 	
+	/**
+	 * Spawns a random block from the inbuilt block types
+	 */
 	protected void spawnBlock() {
 		Random rand = new Random();
 		block = tetrisBlocks[rand.nextInt(0, tetrisBlocks.length)];
@@ -52,7 +55,10 @@ public class GamePanel extends JPanel {
 	}
 	
 	
-	
+	/**
+	 * Checks thew whole array to see if there's any lines which are full, and then clears them. Shifts the whole array above the line down one row after clearing.
+	 * @return
+	 */
 	public int clearLines() {
 		boolean lineFilled;
 		int linesCleard = 0;
