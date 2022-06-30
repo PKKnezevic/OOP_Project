@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class GamePanel extends JPanel {
 	private static final Dimension SCREEN_SIZE = new Dimension(400, 600);
@@ -32,20 +33,56 @@ public class GamePanel extends JPanel {
 		if(checkBottom() == false) {
 			moveBlockToBackground();
 			return false;
-		} else {
+		}
 			block.moveDown();
 			repaint();
 			return true;			
-		}
 	}
 	
 	private boolean checkBottom() {
 		if(block.getBottom() == numberOfRows) {
 			return false;
 		} else {
+			int[][] shape = block.getShape();
+			int width = block.getWidth();
+			int height = block.getHeight();
+			
+			for(int col = 0; col < width; col++) {
+				for(int row = height-1; row >= 0; row--) {
+					if(shape[row][col] != 0) {
+						int x = col + block.getX();
+						int y = row + block.getY() + 1;
+						if(y < 0) {
+							break;
+						}
+						if(background[y][x] != null) {
+							return false;
+						}
+						break;
+					}
+				}
+			}
+			
 			return true;
 		}
 	}
+	
+	private boolean checkLeft() {
+		if(block.getLeftEdge() == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	private boolean checkRight() {
+		if(block.getRightEdge() == NUMBER_OF_COLLUMNS) {
+			return false;
+		} else {
+			return true; 
+		}
+	}
+	
 	
 	private void moveBlockToBackground() {
 		int[][] shape = block.getShape();
@@ -92,23 +129,49 @@ public class GamePanel extends JPanel {
 				color = background[i][j];
 				if(color != null) {
 					
-					int x = i * CELL_SIZE;
-					int y = j * CELL_SIZE;
+					int x = j * CELL_SIZE;
+					int y = i * CELL_SIZE;
 					drawSquare(g, color, x, y);
 				}
 			}
 		}
 	}
-	
+
 	private void drawSquare(Graphics g, Color color, int x, int y) {
 		g.setColor(color);
 		g.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 		g.setColor(Color.black);
 		g.drawRect(x, y, CELL_SIZE, CELL_SIZE);
 	}
+	
+	public void moveBlockRight() {
+		if(checkRight()) {
+			block.moveRight();			
+		}
+		repaint();
+	}
+	
+	public void moveBlockLeft() {
+		if(checkLeft()) {
+			block.moveLeft();			
+		}
+		repaint();
+	}
+	
+	public void dropBlockDown() {
+		while(checkBottom()) {
+			block.moveDown();
+		}
+		repaint();
+	}
+	
+	public void rotateBlock() {
+		block.rotateBlock();
+		repaint();
+	}
 
 	@Override
-	protected void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		drawBlock(g);
 		drawBackground(g);
