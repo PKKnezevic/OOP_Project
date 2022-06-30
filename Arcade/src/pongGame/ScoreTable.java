@@ -14,10 +14,14 @@ public class ScoreTable extends Rectangle implements Serializable {
 	private static int GAME_HEIGHT;
 	int player1;
 	int player2;
+	private int id;
+	private static int cntID = 1;
 	
 	protected ScoreTable(int width, int height){
 		ScoreTable.GAME_WIDTH = width;
 		ScoreTable.GAME_HEIGHT = height;
+		this.id = cntID;
+		cntID++;
 	}
 	
 	protected void draw(Graphics g) {
@@ -55,7 +59,7 @@ public class ScoreTable extends Rectangle implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ScoreTable [player1=" + player1 + ", player2=" + player2 + "]";
+		return "Score=" + player1 + "-" + player2 + ",";
 	}
 	
 	

@@ -30,13 +30,8 @@ public class PacMan extends JPanel implements ActionListener {
 	private final int BLOCK_SIZE = 24;  //Size of a single block unit
 	private final int NUM_OF_BLOCKS = 15; //Number of rows and collumns
 	private final int SCREEN_SIZE = NUM_OF_BLOCKS * BLOCK_SIZE; //Size of the GameScreen specifically
-	private final int MAX_GHOSTS = 12;
 	private final int PACMAN_SPEED = 6;
-	
-	private int numberOfGhosts = 6;
-	private int lives, scores;
-	private int[] dx, dy; //Data position for the ghosts
-	private int[] ghostX, ghostY, ghostDX, ghostDY, ghostSpeed; //General ghost data 
+	private int lives, scores;	
 	
 	private Image heart, ghost;
 	private Image up, down, left, right;
@@ -160,7 +155,7 @@ public class PacMan extends JPanel implements ActionListener {
 		boolean finished = true;
 		
 		while(i < NUM_OF_BLOCKS * NUM_OF_BLOCKS && finished) {
-			if((screenData[i]) != 0) {
+			if((screenData[i]) == 0) {
 				finished = false;
 			}
 			i++;
@@ -367,7 +362,7 @@ public class PacMan extends JPanel implements ActionListener {
 			ghostSpeed[i] = validSpeeds[random];
 		}
 		
-		pacmanX = 7 * BLOCK_SIZE;
+		pacmanX = 8 * BLOCK_SIZE;
 		pacmanY = 11 * BLOCK_SIZE;
 		pacmanComanndX = 0;
 		pacmanCommandY = 0;
@@ -433,6 +428,10 @@ public class PacMan extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		repaint();
 	}
-	
 
+	public int getScores() {
+		return scores;
+	}
+	
+	
 }

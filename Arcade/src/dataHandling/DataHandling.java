@@ -1,45 +1,41 @@
 package dataHandling;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.Scanner;
 
-import pongGame.ScoreTable;
-
-public class DataHandling {
-	public static void saveScoresToFile(String filePath, Object scoreToSave) {
-		File binFile = new File(filePath);		
+public class DataHandling{
+	
+	public static void saveScoresToFile(String filePath, int player1, int player2) {
+		File file = new File(filePath);		
 		try {
-			FileOutputStream fos = new FileOutputStream(binFile, true);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(scoreToSave);
-			oos.reset();
-			oos.close();
-			fos.close();
-		} catch (IOException ioe) {
-			System.out.println("Error while writting to file!");
-			return;
+			StringBuilder strb = new StringBuilder();
+			strb.append(String.valueOf(player1));
+			strb.append(",");
+			strb.append(String.valueOf(player2));
+			strb.append("\n");
+			PrintWriter pw = new PrintWriter(file);
+			pw.write(strb.toString());
+			pw.flush();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		
 	}
 	
-	public static LinkedList<ScoreTable> getPongScoresFromFile() {
-		File binFile = new File("./ScoresPong.bin");
-		LinkedList<ScoreTable> scores = new LinkedList<>();
+	public static LinkedList<String> getPongScoresFromFile(String filepath) {
+		File pongFile = new File(filepath);
+		LinkedList<String> scores = new LinkedList<>();
 		try {
-			FileInputStream fis = new FileInputStream(binFile);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			while(fis.available() > 0) {
-				ScoreTable score = (ScoreTable) ois.readObject();
-				scores.add(score);
+			Scanner sc = new Scanner(pongFile);
+			while(sc.hasNext()) {
+				scores.add(sc.nextLine());
 			}
-			ois.close();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} catch (ClassNotFoundException e) {
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		
