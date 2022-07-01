@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"arcadeGui"},{"l":"dataHandling"},{"l":"pacManGame"},{"l":"pongGame"},{"l":"tetrisGame"}];updateSearchResults();
